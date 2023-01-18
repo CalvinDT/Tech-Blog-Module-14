@@ -1,46 +1,58 @@
 const { Model, DataTypes } = require('sequelize');
-const sequelize = require('../config/config');
+const bcrypt = require('bcrypt');
+const sequelize = require('../config/connection');
 
+// create Post model
 class Post extends Model {}
 
-  Post.init(
-  {
-    id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      primaryKey: true,
-      autoIncrement: true,
-    },
-    postTitle: {
-      type: DataTypes.STRING(25),
-      allowNull: false,
-      unique: true,
-    },
-    postContent: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true,
-    },
-    dateCreated: {
-      type: DataTypes.DATEONLY,
-      allowNull: false,
-      defaultValue: DataTypes.NOW,
-    },
-    userId: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: 'user',
-        key: 'id',
+// Nate's Post model
+Post.init(
+    {
+        id: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          primaryKey: true,
+          autoIncrement: true
+        },
+        title: {
+          type: DataTypes.STRING,
+          allowNull: false
+        },
+        post_text: {
+          type: DataTypes.STRING,
+          allowNull: false,
+          validate: {
+            len: [1]
+          }
+        },
+        user_id: {
+          type: DataTypes.INTEGER,
+          references: {
+            model: 'user',
+            key: 'id'
+          }
+        }
       },
-    },  
-  },
-  {
-    sequelize,
-    timestamps: false,
-    freezeTableName: true,
-    underscored: true,
-    modelName: 'post',
-  }
+      {
+        sequelize,
+        freezeTableName: true,
+        underscored: true,
+        modelName: 'post'
+      }
 );
+
+// // Alex's Post model
+// class Post extends Model {}
+// // create fields/columns for Post model
+// Post.init(
+//   {
+//       title: DataTypes.STRING,
+//       post_text: DataTypes.STRING
+//   },
+//   {
+//     sequelize
+//   }
+// );
+
 
 module.exports = Post;

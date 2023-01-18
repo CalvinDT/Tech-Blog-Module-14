@@ -1,48 +1,47 @@
 const { Model, DataTypes } = require('sequelize');
-const sequelize = require('../config/config');
+const bcrypt = require('bcrypt');
+const sequelize = require('../config/connection');
 
+// create Comment model
 class Comment extends Model {}
 
-  Comment.init(
-  {
-    id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      primaryKey: true,
-      autoIncrement: true,
-    },
-    commentContent: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true,
-    },
-    dateCreated: {
-      type: DataTypes.DATEONLY,
-      allowNull: false,
-      defaultValue: DataTypes.NOW,
-    },
-    userId: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: 'user',
-        key: 'id',
+Comment.init(
+    {
+        id: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          primaryKey: true,
+          autoIncrement: true
+        },
+        comment_text: {
+          type: DataTypes.STRING,
+          allowNull: false,
+          validate: {
+            len: [1]
+          }
+        },
+        user_id: {
+          type: DataTypes.INTEGER,
+          references: {
+            model: 'user',
+            key: 'id'
+          }
+        },
+        post_id: {
+          type: DataTypes.INTEGER,
+          references: {
+            model: 'post',
+            key: 'id'
+          }
+        }
       },
-    }, 
-    postId: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: 'post',
-        key: 'id',
-      },
-    }, 
-  },
-  {
-    sequelize,
-    timestamps: false,
-    freezeTableName: true,
-    underscored: true,
-    modelName: 'comment',
-  }
+      {
+        sequelize,
+        freezeTableName: true,
+        underscored: true,
+        modelName: 'comment'
+      }
 );
+
 
 module.exports = Comment;
