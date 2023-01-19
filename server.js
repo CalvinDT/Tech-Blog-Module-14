@@ -1,49 +1,47 @@
-// TECH BLOG - CHECKED, SAME AS REFERENCE
-const path = require('path');
+//Dependencies
 const express = require('express');
-const session = require('express-session');
-const exphbs = require('express-handlebars');
-app.use(require('./controllers/'));
+const path = require('path');
+const routes = require('./controllers');
 const helpers = require('./utils/helpers');
 
-const sequelize = require('./config/config');
-const SequelizeStore = require('connect-session-sequelize')(session.Store);
+// To Import express-handlebars
+const exphbs = require('express-handlebars');
+// Handlebars.js engine with custom helpers
+const hbs = exphbs.create({ helpers });
+const session = require('express-session');
 
+// express app
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-const hbs = exphbs.create({ helpers });
-
+// Set up sessions
 const sess = {
-  secret: 'Tech blog secret',
-  cookie: {},
-  resave: false,
-  saveUninitialized: true,
-  store: new SequelizeStore({
-    db: sequelize
-  })
-};
+    secret: 'Super secret secret',
+    cookie: {
+      // Stored in milliseconds
+      maxAge: 60 * 60 * 1000, // expires after 1 hour
+    },
+    resave: false,
+    saveUninitialized: true,
+  };
+  app.use(session(sess));
 
-app.use(session(sess));
-
+  // Inform Express.js to use Handlebars.js as the default template engine
 app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
 
+//import sequelize connection
+const sequelize = require('./config/connection');
+
+// middleware
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Set up for the routes
 app.use(routes);
 
-// INSTEAD OF LINE 5:
-// app.use(require('./controllers/'));
-
-app.listen(PORT, () => {
-  console.log(`App listening on port ${PORT}!`);
-  sequelize.sync({ force: false });
+// sync sequelize models to the database, then turn on the server
+sequelize.sync({ force: false}).then(() => {
+  app.listen(PORT, () => console.log(`Sever listening on http://localhost:${PORT}`));
 });
-
-// SAME AS BELOW:
-// sequelize.sync({ force: false }).then(() => {
-//   app.listen(PORT, () => console.log('Now listening'));
-// });

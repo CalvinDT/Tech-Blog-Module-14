@@ -1,30 +1,50 @@
-<section>
-    <h2>Create New Post</h2>
-    
-    <form class="new-post-form">
-        <div>
-            <label for="post-title">Title</label>
-            <input type="text" id="post-title" name="post-title"/>
-        </div>
-        <div>
-            <label for="post-text">Text</label>
-            <textarea id="post-text" name="post-text"></textarea>
-        </div>
-        <button type="submit" class="btn">Create</button>
+<div class="row">
+  <div class="col-auto">
+    <h2>Welcome, {{name}}!</h2>
+  </div>
+</div>
+
+<div class="row mt-4">
+  <div class="col-md-6">
+    <h3>Create a new post:</h3>
+
+    <form class="form new-post-form">
+      <div class="form-group">
+        <label for="post-name">Post name:</label>
+        <input class="form-input" type="text" id="post-name" name="post-name" />
+      </div>
+      <div class="form-group">
+        <label for="post-desc">description:</label>
+        <textarea class="form-input" id="post-desc" name="post-desc"></textarea>
+      </div>
+      <div class="form-group">
+        <button type="submit" class="btn btn-primary">Create</button>
+      </div>
     </form>
-</section>
-{{#if posts.length}}
-<section>
-    <h2>Your Posts</h2>
-    <ol>
-        {{#each posts as |post|}}
-        <li>
-            {{> post-info post}}
-            <a href="/dashboard/edit/{{post.id}}" class="edit-link">Edit Post</a>
-        </li>
+  </div>
+
+  {{#if posts.length}}
+  <div class="col-md-6 post-list">
+    <h3>Current Posts:</h3>
+
+    {{#each posts as |post|}}
+    <div class="row mb-2">
+      <div class="col-md-8">
+        <h4><a href="/post/{{post.id}}">{{post.name}}</a></h4>
+      </div>
+      <div class="col-md-4">
+       <button class="btn btn-sm btn-danger" delete-id="{{post.id}}">DELETE</button>
+              </div>
+            </div>
         {{/each}}
-    </ol>
-</section>
+    </div>
+</div>
+
+{{else}}
+  <div class="col-md-6 post-list">
+    <h3>No posts yet</h3>
+  </div>
+</div>
 {{/if}}
 
-<script src="/javascript/add-post.js"></script>
+<script src="/dashboard.js"></script>
